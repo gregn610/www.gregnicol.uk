@@ -106,10 +106,8 @@ def publish(c):
     """Publish to production via rsync"""
     pelican_run('-s {settings_publish}'.format(**CONFIG))
     c.run(
-        'rsync --delete --exclude ".DS_Store" -pthrvz -c '
-        '-e "ssh -p {ssh_port}" '
-        '{} {ssh_user}@{ssh_host}:{ssh_path}'.format(
-            CONFIG['deploy_path'].rstrip('/') + '/',
+        'aws s3 sync --delete {output} s3://www.gregnicol.uk/'.format(
+            output=CONFIG['deploy_path'].rstrip('/') + '/',
             **CONFIG))
 
 

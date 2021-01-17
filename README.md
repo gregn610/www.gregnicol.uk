@@ -55,7 +55,7 @@ Setup & deploy Terraform with Terragrunt DRY, reusable modules, multi-environmen
 ## Build
 ### Terraform
 ```shell script
-cd src/terraform/env/prod
+cd ./src/terraform/env/prod
 terragrunt init
 terragrunt plan
 terragrunt apply -auto-approve
@@ -64,7 +64,7 @@ terragrunt apply -auto-approve
 
 ### www-site
 ```shell script
-src/site
+cd ./site
 aws s3 sync --dryrun --delete . s3://www.gregnicol.uk/  # dry run
 
 ```

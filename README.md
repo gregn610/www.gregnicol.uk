@@ -17,15 +17,6 @@ An exremely over-engineered demo website.
  1. [ ] Git commit hooks for linting & formatting
  1. [x] Maintain Readme
 
-## Build
-```shell script
-cd src/terraform/env/prod
-terragrunt init
-terragrunt plan
-terragrunt apply -auto-approve
-
-```
-
 ## Features 
 
 ### Github repo
@@ -36,6 +27,7 @@ Using AWS S3 to host a static website securely. Route 53 for DNS & Certicate Man
 
 ### Terraform + Terragrunt
 Setup & deploy Terraform with Terragrunt DRY, reusable modules, multi-environment & flexible stack deployments etc.
+ - [ ] Resource tags for everything
 
 ### Static WWW with generator
  
@@ -44,10 +36,11 @@ Setup & deploy Terraform with Terragrunt DRY, reusable modules, multi-environmen
 
 
 ### CI/CD for static site
-
+ - [ ] Separate repo for CMS
+ - [ ] Codebuild pipeline etc. for git 
 
 ### Blue / Green deployments
-
+ - [ ] Cloudfront origin path + pipeline for blue/green deployments
 
 ### CI/CD for infrastructure
 
@@ -56,3 +49,23 @@ Setup & deploy Terraform with Terragrunt DRY, reusable modules, multi-environmen
 
 
 ### Maintain Readme
+
+
+
+## Build
+### Terraform
+```shell script
+cd src/terraform/env/prod
+terragrunt init
+terragrunt plan
+terragrunt apply -auto-approve
+
+```
+
+### www-site
+```shell script
+src/site
+aws s3 sync --dryrun --delete . s3://www.gregnicol.uk/  # dry run
+
+```
+

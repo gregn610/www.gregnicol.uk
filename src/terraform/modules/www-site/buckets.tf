@@ -9,6 +9,8 @@ module "www_bucket" {
 
   bucket = local.www_bucket_name
   acl    = "public-read"
+  attach_policy = true
+  policy = templatefile("${path.module}/templates/www-bucket-policy.json", {BUCKET_NAME = local.www_bucket_name})
   website = {
     index_document = "index.html"
     error_document = "error.html"
@@ -21,8 +23,7 @@ module "www_bucket" {
 }
 
 resource "aws_s3_bucket_ownership_controls" "www_bucket" {
-  bucket = module.www_bucket.this_s3_bucket_id
-
+  bucket = local.www_bucket_name
   rule {
     object_ownership = "BucketOwnerPreferred"
   }
@@ -41,7 +42,7 @@ module "logging_bucket" {
 }
 
 resource "aws_s3_bucket_ownership_controls" "cloudfront_logging_bucket" {
-  bucket = module.logging_bucket.this_s3_bucket_id
+  bucket = local.logging_bucket_name
   rule {
     object_ownership = "BucketOwnerPreferred"
   }

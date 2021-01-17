@@ -1,5 +1,5 @@
 # www.gregnicol.uk
-An exremely over-engineered demo website.
+An exremely over-engineered demo [website](http://www.gregnicol.uk).
 
 ## ToDo
  1. [x] Github repo 
@@ -15,42 +15,7 @@ An exremely over-engineered demo website.
  1. [ ]
  1. [ ]
  1. [ ] Git commit hooks for linting & formatting
- 1. [x] Maintain Readme
-
-## Features 
-
-### Github repo
-Using branching etc. Maybe semver commit messages. 
-
-### Basic S3 hosted site
-Using AWS S3 to host a static website securely. Route 53 for DNS & Certicate Manager for SSL.
-
-### Terraform + Terragrunt
-Setup & deploy Terraform with Terragrunt DRY, reusable modules, multi-environment & flexible stack deployments etc.
- - [ ] Resource tags for everything
-
-### Static WWW with generator
- 
-
-### Cloudfront
-
-
-### CI/CD for static site
- - [ ] Separate repo for CMS
- - [ ] Codebuild pipeline etc. for git 
-
-### Blue / Green deployments
- - [ ] Cloudfront origin path + pipeline for blue/green deployments
-
-### CI/CD for infrastructure
-
-
-### Cognito Authentication
-
-
-### Maintain Readme
-
-
+ 1. [ ] Maintain Readme
 
 ## Build
 ### Terraform
@@ -63,9 +28,18 @@ terragrunt apply -auto-approve
 ```
 
 ### www-site
+Build & preview. Pelican comes with support for [Invoke](http://docs.pyinvoke.org/en/stable/) tasks and build.
 ```shell script
-cd ./site
-aws s3 sync --dryrun --delete . s3://www.gregnicol.uk/  # dry run
+cd ./www/
+invoke publish
+invoke serve
+
+```
+Upload to S3
+```shell script
+aws s3 sync --dryrun --delete ./output/ s3://www.gregnicol.uk/  # dry run
+
+aws s3 sync --delete ./output/ s3://www.gregnicol.uk/
 
 ```
 

@@ -20,6 +20,10 @@ module "www_bucket" {
     target_bucket = module.logging_bucket.this_s3_bucket_id
     target_prefix = "logs/www-bucket/"
   }
+
+  versioning = {
+    enabled = true
+  }
 }
 
 resource "aws_s3_bucket_ownership_controls" "www_bucket" {

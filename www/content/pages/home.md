@@ -21,33 +21,34 @@ A deliberately over-engineered portfolio type side project.
 
 
 ### Terraform + Terragrunt
- - [x] Setup & deploy Terraform with Terragrunt DRY, reusable modules, multi-environment & flexible stack deployments etc.
- - [ ] Resource tags for everything
- - [ ] [TFSec](https://github.com/tfsec/tfsec) linting
+ - [x] Setup [Terraform](https://github.com/gregn610/www.gregnicol.uk/tree/main/src/terraform/modules/www-site). 
+ - [x] Terragrunt [DRY](https://github.com/gregn610/www.gregnicol.uk/blob/main/src/terraform/terragrunt.hcl), reusable modules, multi-environment & flexible stack deployments etc.
+ - [ ] Resource tags for everything.
+ - [ ] [TFSec](https://github.com/tfsec/tfsec) linting.
 
 
 ### Static WWW with generator
  - [x] [Pelican](https://blog.getpelican.com/) to host a basic blog.
- - [ ] Content
- - [ ] Design
+ - [ ] Content.
+ - [ ] Design.
 
 
 ### Cloudfront
- - [ ] Cloudfront + HTTPS
+ - [ ] Cloudfront + HTTPS.
  
  
 ### Cognito Authentication
 Use Cognito, Lambda@Edge & Cloudfront to provide serverless authentication & authorization.
- - [x] Fork https://github.com/Widen/cloudfront-auth and apply Cognito PR
- - [ ] Terraform + AWS SAM packaging
- - [ ] TF Templates vs Lambda layers for config
- - [ ] Terraform deployed
+ - [x] Fork https://github.com/Widen/cloudfront-auth and apply Cognito PR.
+ - [ ] Terraform + AWS SAM packaging.
+ - [ ] TF Templates vs Lambda layers for config.
+ - [ ] Terraform deployed.
 
 
 ### CI/CD for static site
- - [ ] Separate repo for static CMS
- - [ ] Codebuild pipeline etc. for git 
- - [ ] Cloudfront origin path + pipeline for blue/green deployments
+ - [ ] Separate repo for static CMS.
+ - [ ] Codebuild pipeline etc. for git. 
+ - [ ] Cloudfront origin path + pipeline for blue/green deployments.
 
 
 ### CI/CD for infrastructure
@@ -55,7 +56,8 @@ Use Cognito, Lambda@Edge & Cloudfront to provide serverless authentication & aut
 
 
 ### Monitoring & Logs
- - [ ] Lifecycle rules for S3 logs
- - [ ] Cloudwatch & dashboards
+ - [ ] Lifecycle rules for S3 logs.
+ - [ ] Cloudwatch & dashboards.
+ - [ ] Analytics
  
- .
+.

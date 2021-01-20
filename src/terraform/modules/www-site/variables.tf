@@ -13,3 +13,9 @@ variable "resource_name" {
   type        = string
   description = "Used in resource names and tags. eg. gregnicoluk"
 }
+
+variable "common_tags" {
+  type        = map
+  description = "Common AWS resource tags"
+  default     = {}
+}

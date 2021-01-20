@@ -1,0 +1,35 @@
+version: 0.2
+# Calls `pelican publish`, updates the build number in SSM and the artifact goes to S3.
+# Deployment happens from the pipeline deploy stage so manual approval etc. are possible
+env:
+  parameter-store:
+    SSM_CLOUDFRONT_VALUE: "${SSM_CLOUDFRONT_PARAM}"   # template var
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+    commands: # NB this is a template so bash vars to use dollar-without-curly-braces style variables
+      - cd "$CODEBUILD_SRC_DIR/"
+      - pip3 install --upgrade -r requirements.txt
+  build:
+    commands:
+      - cd "$CODEBUILD_SRC_DIR/"
+      - invoke build
+  post_build:
+    commands:  # NB this is a template so bash vars to use dollar-without-curly-braces style variables
+      - echo Pelican publish done!
+      - export SSM_CLOUDFRONT_VAUE=$( echo $CODEBUILD_BUILD_ID | awk '{split($0,a,":"); print a[2]}' )
+      - echo Now publishing S3 key to SSM parameter ${SSM_CLOUDFRONT_PARAM}
+      # YAML block scalar newlines preserved with |
+      - |
+        if [ $CODEBUILD_BUILD_SUCCEEDING = 1 ]; then
+        aws ssm put-parameter --overwrite --name "${SSM_CLOUDFRONT_PARAM}" --value "$SSM_CLOUDFRONT_VAUE"
+        else
+        echo Build failed
+        fi
+artifacts:
+  base-directory: output
+  discard-paths: no
+  files:
+    - '**/*'
+

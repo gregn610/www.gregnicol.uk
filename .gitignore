@@ -1,6 +1,3 @@
-# This is built by Pelican _and_ S3 s versioned
-/www/output/
-
 .idea/
 
 # Thanks: https://github.com/github/gitignore/blob/master/Terraform.gitignore

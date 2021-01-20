@@ -2,20 +2,20 @@
 An exremely over-engineered demo [website](http://www.gregnicol.uk).
 
 ## ToDo
- 1. [x] Github repo 
- 1. [x] Basic S3 hosted site 
- 1. [x] Terraform + Terragrunt
- 1. [ ] Static WWW with generator 
- 1. [ ] HTTPS & Cloudfront
- 1. [ ] CI/CD for static site
- 1. [ ] Blue / Green deployments
- 1. [ ] CI/CD for infrastructure
- 1. [ ] Cognito Authentication
- 1. [ ]
- 1. [ ]
- 1. [ ]
- 1. [ ] Git commit hooks for linting & formatting
- 1. [ ] Maintain Readme
+ - [x] Github repo 
+ - [x] Basic S3 hosted site 
+ - [x] Terraform + Terragrunt
+ - [x] Static WWW with generator 
+ - [ ] HTTPS & Cloudfront
+ - [ ] CI/CD for static site
+ - [ ] Blue / Green deployments
+ - [ ] CI/CD for infrastructure
+ - [ ] Cognito Authentication
+ - [ ]
+ - [ ]
+ - [ ]
+ - [ ] Git commit hooks for linting & formatting
+ - [ ] Maintain Readme
 
 ## Build
 ### Terraform

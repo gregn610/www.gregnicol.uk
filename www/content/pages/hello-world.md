@@ -3,7 +3,7 @@ Date: 2021-01-17 17:00
 URL:
 save_as: index.html
 
-A deliberately over-engineered portfolio type side project.
+A deliberately over-engineered serverless portfolio project.
 
 [Source code](https://github.com/gregn610/www.gregnicol.uk/tree/main/src) on Github.
 

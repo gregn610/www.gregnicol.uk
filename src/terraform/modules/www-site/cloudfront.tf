@@ -4,6 +4,13 @@ variable "cloudfront_origin_path_value_public" {
   default     = " "
 }
 
+
+resource "aws_s3_bucket_policy" "s3_secured_oai_policy" {
+  bucket = module.www_bucket.this_s3_bucket_id
+  policy = data.aws_iam_policy_document.s3_secured_oai_policy.json
+}
+
+
 module "cloudfront" {
   source  = "terraform-aws-modules/cloudfront/aws"
   # version = "1.5.0"
@@ -11,7 +18,8 @@ module "cloudfront" {
   aliases = ["${local.subdomain}.${var.domain_name}"]
 
   comment             = "CloudFront for ${var.resource_name}"
-  default_root_object = "${trimspace(var.cloudfront_origin_path_value_public)}/index.html"
+  # default_root_object = "${trimspace(var.cloudfront_origin_path_value_public)}/index.html" # ToDo:  Ready for blue/green
+  default_root_object = "index.html"
   enabled             = true
   is_ipv6_enabled     = true
   price_class         = "PriceClass_All"
@@ -53,7 +61,8 @@ module "cloudfront" {
   }
 
   viewer_certificate = {
-    acm_certificate_arn = module.acm.this_acm_certificate_arn
-    ssl_support_method  = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2019"
+    acm_certificate_arn      = module.acm.this_acm_certificate_arn
+    ssl_support_method       = "sni-only"
   }
 }

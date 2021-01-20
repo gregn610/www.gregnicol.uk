@@ -6,7 +6,7 @@ An exremely over-engineered demo [website](http://www.gregnicol.uk).
  - [x] Basic S3 hosted site 
  - [x] Terraform + Terragrunt
  - [x] Static WWW with generator 
- - [ ] HTTPS & Cloudfront
+ - [x] HTTPS & Cloudfront
  - [ ] CI/CD for static site
  - [ ] Blue / Green deployments
  - [ ] CI/CD for infrastructure

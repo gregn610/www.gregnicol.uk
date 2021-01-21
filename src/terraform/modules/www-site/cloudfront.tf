@@ -10,13 +10,20 @@ resource "aws_s3_bucket_policy" "s3_secured_oai_policy" {
   policy = data.aws_iam_policy_document.s3_secured_oai_policy.json
 }
 
+resource "aws_cloudfront_origin_access_identity" "www_s3" {
+  comment = local.resource_prefix
+}
 
-module "cloudfront" {
-  source  = "terraform-aws-modules/cloudfront/aws"
-  # version = "1.5.0"
+resource "aws_cloudfront_distribution" "www" {
+  # Not using aws-terraform-module because blue/green needs a lifecycle ignore on origin_path
+  lifecycle {
+    ignore_changes = [
+      origin  # Gah!, can't narrow this down to ["public_bucket"]["origin_path"]
+                               # https://github.com/hashicorp/terraform/issues/22504
+    ]
+  }
 
-  aliases = ["${local.subdomain}.${var.domain_name}"]
-
+  aliases             = ["${local.subdomain}.${var.domain_name}"]
   comment             = "CloudFront for ${var.resource_name}"
   # default_root_object = "${trimspace(var.cloudfront_origin_path_value_public)}/index.html" # ToDo:  Ready for blue/green
   default_root_object = "index.html"
@@ -26,41 +33,47 @@ module "cloudfront" {
   retain_on_delete    = false
   wait_for_deployment = false
 
-  create_origin_access_identity = true
-  origin_access_identities = {
-    public_bucket  = "${var.resource_name} public access"
-  }
-
-  logging_config = {
+  logging_config {
     bucket = module.logging_bucket.this_s3_bucket_bucket_regional_domain_name
     prefix = "cloudfront/${var.resource_name}"
   }
 
-  origin = {
-    public_bucket = {
-      domain_name = module.www_bucket.this_s3_bucket_bucket_regional_domain_name
-      # ToDo: bug report TF not accepting origin_path with function ???
-      origin_path = trimspace(var.cloudfront_origin_path_value_public)
-      s3_origin_config = {
-        origin_access_identity = "public_bucket" # key in `origin_access_identities`
-      }
+  origin {
+    origin_id   = "public_bucket"
+    domain_name = module.www_bucket.this_s3_bucket_bucket_regional_domain_name
+    # ToDo: bug report TF not accepting origin_path with function ???
+    origin_path = trimspace(var.cloudfront_origin_path_value_public)
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.www_s3.cloudfront_access_identity_path
     }
   }
 
-  default_cache_behavior = {
+  default_cache_behavior {
     target_origin_id       = "public_bucket"
     viewer_protocol_policy = "redirect-to-https"
 
     allowed_methods = ["GET", "HEAD"]
     cached_methods  = ["GET", "HEAD"]
     compress        = true
-    query_string    = true
+    forwarded_values {
+      query_string = true
+      cookies {
+        forward = "all"
+      }
+    }
     min_ttl         = 0
     default_ttl     = 3600  # 1 hour
     max_ttl         = 43200 # 12 hours
   }
 
-  viewer_certificate = {
+  restrictions {
+    geo_restriction {
+      restriction_type = "blacklist"
+      locations        = ["RU", "CN", "UA"]
+    }
+  }
+
+  viewer_certificate {
     minimum_protocol_version = "TLSv1.2_2019"
     acm_certificate_arn      = module.acm.this_acm_certificate_arn
     ssl_support_method       = "sni-only"

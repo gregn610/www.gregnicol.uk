@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "s3_secured_oai_policy" {
 
     principals {
       type        = "AWS"
-      identifiers = module.cloudfront.this_cloudfront_origin_access_identity_iam_arns
+      identifiers = [aws_cloudfront_origin_access_identity.www_s3.iam_arn]
     }
   }
 }

@@ -8,8 +8,8 @@ module "records" {
       name = local.subdomain
       type = "A"
       alias = {
-        name    = module.cloudfront.this_cloudfront_distribution_domain_name
-        zone_id = module.cloudfront.this_cloudfront_distribution_hosted_zone_id
+        name    = aws_cloudfront_distribution.www.domain_name
+        zone_id = aws_cloudfront_distribution.www.hosted_zone_id
       }
     },
   ]

@@ -11,6 +11,41 @@ module "codecommit" {
   repository_name = local.repository_name
 }
 
+resource "aws_iam_role" "codebuild" {
+  name  = "${local.resource_prefix}-codebuildrole"
+
+  assume_role_policy = <<HERE
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "codebuild.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
+HERE
+
+  tags = var.common_tags
+}
+
+resource "aws_iam_role_policy" "codebuild_policy" {
+  name  = "${local.resource_prefix}-codebuildpolicy"
+  role  = aws_iam_role.codebuild.id
+
+  policy = data.aws_iam_policy_document.codebuild_policy.json
+}
+
+resource "aws_iam_role_policy" "codecommit_policy" {
+  name  = "${local.resource_prefix}-codecommitpolicy"
+  role  = aws_iam_role.codebuild.id
+
+  policy =  data.aws_iam_policy_document.codecommit_policy.json
+}
+
 module "codebuild" {
   source                 = "git::https://github.com/gregn610/terraform-aws-codebuild?ref=v0.2.110"  # forked ( unchanged) from "jameswoolfenden/codebuild/aws"
 
@@ -21,7 +56,8 @@ module "codebuild" {
   description            = "${local.resource_prefix} build"
   environment            = var.build_environment
   name                   = local.build_name
-  projectroot            = local.build_projectroot
+  role                   = aws_iam_role.codebuild.name
+  projectroot            = local.build_projectroot  # used in the SSM parameters path
   sourcecode             = local.build_sourcecode
   versioning             = true  # artifact bucket versioning
 }
@@ -71,25 +107,6 @@ module "codepipeline" {
         version          = "1"
         configuration = {
           ProjectName = local.build_name
-        }
-      }
-    },
-    {
-      name = "Deploy"
-      action = {
-        name            = "PublishPublicS3Bucket"
-        category        = "Deploy"
-        owner           = "AWS"
-        namespace       = local.deploy_namespace
-        provider        = "S3"
-        input_artifacts = ["BuildArtifact"]
-        output_artifacts = []
-#        role_arn        = module.iam_deploy_to_public_s3.role_arn
-        version         = "1"
-        configuration = {
-          BucketName = var.deploy_bucket
-          Extract = "true"
-          ObjectKey = local.deploy_root_key
         }
       }
     }

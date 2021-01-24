@@ -19,3 +19,8 @@ variable "common_tags" {
   description = "Common AWS resource tags"
   default     = {}
 }
+variable "default_root_object" {
+  type = string
+  description = "Default root / web page for cloudfront"
+  default = "index.html"
+}

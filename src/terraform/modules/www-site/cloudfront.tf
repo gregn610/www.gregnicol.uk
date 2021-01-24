@@ -4,7 +4,6 @@ variable "cloudfront_origin_path_value_public" {
   default     = " "
 }
 
-
 resource "aws_s3_bucket_policy" "s3_secured_oai_policy" {
   bucket = module.www_bucket.this_s3_bucket_id
   policy = data.aws_iam_policy_document.s3_secured_oai_policy.json
@@ -25,8 +24,7 @@ resource "aws_cloudfront_distribution" "www" {
 
   aliases             = ["${local.subdomain}.${var.domain_name}"]
   comment             = "CloudFront for ${var.resource_name}"
-  # default_root_object = "${trimspace(var.cloudfront_origin_path_value_public)}/index.html" # ToDo:  Ready for blue/green
-  default_root_object = "index.html"
+  default_root_object = var.default_root_object
   enabled             = true
   is_ipv6_enabled     = true
   price_class         = "PriceClass_All"
@@ -39,7 +37,7 @@ resource "aws_cloudfront_distribution" "www" {
   }
 
   origin {
-    origin_id   = "public_bucket"
+    origin_id   = local.cloudfront_s3_origin_name
     domain_name = module.www_bucket.this_s3_bucket_bucket_regional_domain_name
     # ToDo: bug report TF not accepting origin_path with function ???
     origin_path = trimspace(var.cloudfront_origin_path_value_public)
@@ -49,7 +47,7 @@ resource "aws_cloudfront_distribution" "www" {
   }
 
   default_cache_behavior {
-    target_origin_id       = "public_bucket"
+    target_origin_id       = local.cloudfront_s3_origin_name
     viewer_protocol_policy = "redirect-to-https"
 
     allowed_methods = ["GET", "HEAD"]

@@ -15,6 +15,17 @@ variable "common_tags" {
   default     = {}
 }
 
+variable "cloudfront_distribution_id" {
+  type = string
+  description = "Cloudfront Distribution that will get it's originPath updated"
+}
+
+variable "cloudfront_origin" {
+  type = string
+  description = "Cloudfront Distribution Origin that will get it's originPath updated"
+}
+
+
 variable "cloudfront_origin_path_value_public" {
   type = string
   description = "Value to put in the SSM parameter used for the cloudfront origin path for versioned site updates"
@@ -59,11 +70,6 @@ variable "versioning" {
 }
 
 # CodePipeline module
-variable "deploy_root_key" {
-  description = "Optional used in the cloudfront origin path for blue/green deployments"
-  type = string
-  default = ""
-}
 variable "deploy_bucket" {
   description = "S3 bucket the site is served from ( behind Cloudfront)"
   type = string

@@ -1,14 +1,15 @@
 version: 0.2
-# Calls `pelican publish`, updates the build number in SSM and the artifact goes to S3.
-# Deployment happens from the pipeline deploy stage so manual approval etc. are possible
+# Calls `pelican build`, and syncs the artifacts to S3.
+# Post-build updates the build number in SSM and updates cloudfront to use a new originPath, to give blue/green deploys.
 env:
   parameter-store:
-    SSM_CLOUDFRONT_VALUE: "${SSM_CLOUDFRONT_PARAM}"   # template var
+    SSM_VALUE_CODEBUILD_CURRENT: "${TPL_SSM_PATH_CODEBUILD_LATEST}"           # template var
 phases:
   install:
     runtime-versions:
       python: 3.8
     commands: # NB this is a template so bash vars to use dollar-without-curly-braces style variables
+      - yum install -y jq
       - cd "$CODEBUILD_SRC_DIR/"
       - pip3 install --upgrade -r requirements.txt
   build:
@@ -17,19 +18,25 @@ phases:
       - invoke build
   post_build:
     commands:  # NB this is a template so bash vars to use dollar-without-curly-braces style variables
-      - echo Pelican publish done!
-      - export SSM_CLOUDFRONT_VAUE=$( echo $CODEBUILD_BUILD_ID | awk '{split($0,a,":"); print a[2]}' )
-      - echo Now publishing S3 key to SSM parameter ${SSM_CLOUDFRONT_PARAM}
-      # YAML block scalar newlines preserved with |
+      - set -e; set -o pipefail;
+      - if [[ $CODEBUILD_BUILD_SUCCEEDING != 1 ]]; then echo "Build failed"; false; fi  # short circuit exit
+      # YAML block scalar i.e. newlines preserved with |
       - |
-        if [ $CODEBUILD_BUILD_SUCCEEDING = 1 ]; then
-        aws ssm put-parameter --overwrite --name "${SSM_CLOUDFRONT_PARAM}" --value "$SSM_CLOUDFRONT_VAUE"
-        else
-        echo Build failed
-        fi
+        set -x;
+        export SSM_VALUE_CODEBUILD_LATEST=$( echo $CODEBUILD_BUILD_ID | awk '{split($0,a,":"); print a[2]}' )
+        echo "Deploying Pelican build to S3"
+        aws s3 sync --delete "$CODEBUILD_SRC_DIR/output/" "s3://${TPL_S3_DEPLOYMENT_BUCKET}/$SSM_VALUE_CODEBUILD_LATEST/"
+        echo "Now publishing S3 key to SSM parameter ${TPL_SSM_PATH_CODEBUILD_LATEST}"
+        aws ssm put-parameter --overwrite --name "${TPL_SSM_PATH_CODEBUILD_LATEST}" --value "$SSM_VALUE_CODEBUILD_LATEST"
+        echo "Updating cloudfront distribution's originPath"
+        aws cloudfront get-distribution --id "${TPL_CLOUDFRONT_ID}" > cloudfront.json
+        ETAG="$(jq -r '.ETag' cloudfront.json )"
+        UPDATED_CONFIG=$(cat cloudfront.json | jq ".Distribution.DistributionConfig | (select(.Origins.Items[][\"Id\"] == \"${TPL_CLOUDFRONT_ORIGIN}\") | .Origins.Items[].OriginPath ) = \"/$SSM_VALUE_CODEBUILD_LATEST\" ")
+        aws cloudfront update-distribution --id "${TPL_CLOUDFRONT_ID}" --if-match "$ETAG" --distribution-config "$UPDATED_CONFIG"
+
+
 artifacts:
   base-directory: output
   discard-paths: no
   files:
     - '**/*'
-

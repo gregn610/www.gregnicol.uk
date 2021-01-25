@@ -1,3 +1,6 @@
 [submodule "codecommit-www"]
 	path = www
 	url = https://git-codecommit.eu-west-2.amazonaws.com/v1/repos/prod-gregnicoluk-www
+[submodule "cloudfront-auth"]
+	path = src/aws-sam/cloudfront-auth
+	url = https://github.com/gregn610/cloudfront-auth.git

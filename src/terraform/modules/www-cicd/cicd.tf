@@ -1,19 +1,19 @@
-resource "aws_iam_group" "www_editors" {
+resource "aws_iam_group" "builders" {
   name = "editors"
-  path = "/${local.resource_prefix}/www/editors/"
+  path = "/${local.resource_prefix}/builders/"
 }
 
 module "codecommit" {
   source          = "git::https://github.com/gregn610/terraform-aws-codecommit?ref=v0.3.11"  # forked (unchanged) from  jameswoolfenden/terraform-aws-codecommit
 
   default_branch  = var.default_branch
-  developer_group = aws_iam_group.www_editors.name
+  developer_group = aws_iam_group.builders.name
   repository_name = local.repository_name
 }
 
 resource "aws_iam_role" "codebuild" {
+  # can't use the module generated version because the policy is tweaked with the S3 deploy_bucket access
   name  = "${local.resource_prefix}-codebuildrole"
-
   assume_role_policy = <<HERE
 {
     "Version": "2012-10-17",
@@ -32,18 +32,16 @@ HERE
   tags = var.common_tags
 }
 
-resource "aws_iam_role_policy" "codebuild_policy" {
-  name  = "${local.resource_prefix}-codebuildpolicy"
+resource "aws_iam_role_policy_attachment" "codecommit_readonly" {
   role  = aws_iam_role.codebuild.id
-
-  policy = data.aws_iam_policy_document.codebuild_policy.json
+  policy_arn = data.aws_iam_policy.codecommit_readonly.arn
 }
 
-resource "aws_iam_role_policy" "codecommit_policy" {
-  name  = "${local.resource_prefix}-codecommitpolicy"
+resource "aws_iam_role_policy" "codebuild_policy" {
+  # can't use the module generated version because the policy is tweaked with the S3 deploy_bucket access
+  name  = "${local.resource_prefix}-codebuildpolicy"
   role  = aws_iam_role.codebuild.id
-
-  policy =  data.aws_iam_policy_document.codecommit_policy.json
+  policy = var.build_codebuild_policy
 }
 
 module "codebuild" {
@@ -57,7 +55,7 @@ module "codebuild" {
   environment            = var.build_environment
   name                   = local.build_name
   role                   = aws_iam_role.codebuild.name
-  projectroot            = local.build_projectroot  # used in the SSM parameters path
+  projectroot            = local.resource_prefix  # used in the SSM parameters path
   sourcecode             = local.build_sourcecode
   versioning             = true  # artifact bucket versioning
 }

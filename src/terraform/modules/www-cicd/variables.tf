@@ -15,28 +15,6 @@ variable "common_tags" {
   default     = {}
 }
 
-variable "cloudfront_distribution_id" {
-  type = string
-  description = "Cloudfront Distribution that will get it's originPath updated"
-}
-
-variable "cloudfront_origin" {
-  type = string
-  description = "Cloudfront Distribution Origin that will get it's originPath updated"
-}
-
-
-variable "cloudfront_origin_path_value_public" {
-  type = string
-  description = "Value to put in the SSM parameter used for the cloudfront origin path for versioned site updates"
-  # NB default is an empty string because SSM doesn't like ""; so always trim it before testing for value
-  default = " "
-  validation {
-    condition     = can(regex("^( |[/].*[^/])$", var.cloudfront_origin_path_value_public))
-    error_message = "Must start with a leading slash and not terminate with a slash."
-  }
-}
-
 # CodeCommit module
 variable "default_branch" {
   type        = string
@@ -46,6 +24,15 @@ variable "default_branch" {
 
 
 # CodeBuild module
+variable "build_buildspec" {
+  description = "The AWS CodeBuild buildspec as rendered YAML"
+  type = string
+}
+
+variable "build_codebuild_policy" {
+  description = "The IAM policy with _all_ permissions required for all stages of the CodeBuild"
+}
+
 variable "build_timeout" {
   description = "The time to wait for a CodeBuild to complete before timing out in minutes (default: 5)"
   type        = string

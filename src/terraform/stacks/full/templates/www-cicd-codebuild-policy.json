@@ -1,0 +1,110 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "S3Buckets",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:List*",
+                "s3:GetObject",
+                "s3:GetBucketLocation",
+                "s3:GetBucketAcl"
+            ],
+            "Resource": [
+                "arn:aws:s3:::www.gregnicol.uk/*",
+                "arn:aws:s3:::www.gregnicol.uk",
+                "arn:aws:s3:::codepipeline-eu-west-2-163714928765/*",
+                "arn:aws:s3:::codepipeline-eu-west-2-163714928765",
+                "arn:aws:s3:::prod-gregnicoluk-www-074234086608-artifacts/*",
+                "arn:aws:s3:::prod-gregnicoluk-www-074234086608-artifacts"
+            ]
+        },
+        {
+            "Sid": "CodeBuild",
+            "Effect": "Allow",
+            "Action": [
+                "codebuild:UpdateProject",
+                "codebuild:StopBuild",
+                "codebuild:StartBuild"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "ECR",
+            "Effect": "Allow",
+            "Action": [
+                "ecr:UploadLayerPart",
+                "ecr:PutImage",
+                "ecr:InitiateLayerUpload",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:GetAuthorizationToken",
+                "ecr:DescribeRepositories",
+                "ecr:DescribeImages",
+                "ecr:CompleteLayerUpload",
+                "ecr:BatchGetImage",
+                "ecr:BatchCheckLayerAvailability"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "SSM",
+            "Effect": "Allow",
+            "Action": [
+                "ssm:PutParameter",
+                "ssm:GetParameters"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "CloudWatch",
+            "Effect": "Allow",
+            "Action": [
+                "logs:PutLogEvents",
+                "logs:CreateLogStream",
+                "logs:CreateLogGroup"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "IAMRoles",
+            "Effect": "Allow",
+            "Action": [
+                "iam:PassRole",
+                "iam:ListRoles"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "CloudFront1",
+            "Action": [
+                "acm:ListCertificates",
+                "cloudfront:*",
+                "iam:ListServerCertificates",
+                "waf:ListWebACLs",
+                "waf:GetWebACL",
+                "wafv2:ListWebACLs",
+                "wafv2:GetWebACL",
+                "kinesis:ListStreams"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+        },
+        {
+            "Sid": "CloudFront2",
+            "Action": [
+                "kinesis:DescribeStream"
+            ],
+            "Effect": "Allow",
+            "Resource": "arn:aws:kinesis:*:*:*"
+        },
+        {
+            "Sid": "CloudFront3",
+            "Action": [
+                "iam:ListRoles"
+            ],
+            "Effect": "Allow",
+            "Resource": "arn:aws:iam::*:*"
+        }
+    ]
+}

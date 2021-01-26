@@ -45,7 +45,7 @@ locals {
       TPL_CLOUDFRONT_ORIGIN         = module.www-site.cloudfront_s3_origin
   })
   buildspec_infra = templatefile("${path.module}/templates/infra-cicd-buildspec.yml", {
-    TPL_SSM_PATH = "/${var.env_name}-${local.resource_name_www}/codebuild"
+    TPL_SSM_PATH = "/${var.env_name}-${local.resource_name_infra}/codebuild"
   })
 }
 

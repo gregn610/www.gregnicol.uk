@@ -4,15 +4,17 @@ phases:
   install:
     runtime-versions:
       nodejs: 14
+    commands: # NB this is a template so bash vars to use dollar-without-curly-braces style variables
+      - yum install -y tree
   build:
     commands: # NB this is a template so bash vars to use dollar-without-curly-braces style variables
-      - cd "$CODEBUILD_SRC_DIR/src/aws-sam/cloud-auth"
+      - cd "$CODEBUILD_SRC_DIR/src/aws-sam/cloudfront-auth"
       - ./build.sh
   post_build:
     commands:
 
 artifacts:
-  base-directory: src/aws-sam/cloud-auth
+  base-directory: src/aws-sam/cloudfront-auth
   discard-paths: yes
   files:
     - 'package.zip'

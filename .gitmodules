@@ -1,8 +1,4 @@
-[submodule "cloudfront-auth"]
-	path = src/aws-sam/cloudfront-auth
-	url = https://github.com/gregn610/cloudfront-auth.git
-	branch = master
 [submodule "src/aws-sam/cloudfront-auth"]
 	path = src/aws-sam/cloudfront-auth
 	url = https://github.com/gregn610/cloudfront-auth.git
-	branch = main
+	branch = master

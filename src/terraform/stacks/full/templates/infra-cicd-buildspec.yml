@@ -3,9 +3,9 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 14
+      nodejs: 12
     commands: # NB this is a template so bash vars to use dollar-without-curly-braces style variables
-      - yum install -y tree
+      - echo "foobar"
   build:
     commands: # NB this is a template so bash vars to use dollar-without-curly-braces style variables
       - cd "$CODEBUILD_SRC_DIR/src/aws-sam/cloudfront-auth"

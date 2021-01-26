@@ -65,9 +65,10 @@ module "www-cicd" {
 }
 
 
+# Based on https://github.com/JamesWoolfenden/terraform-aws-codebuild but forked for environment_variables etc.
 # ToDo: hardcoded buckets in codebuild iam policy
 module "infra-cicd" {
-  source = "../../modules//www-cicd"
+  source = "../../modules//infra-cicd"
 
   env_name      = var.env_name
   resource_name = local.resource_name_infra
@@ -76,5 +77,4 @@ module "infra-cicd" {
   })
   build_environment = local.build_environment_infra
   build_buildspec   = local.buildspec_infra
-  deploy_bucket     = module.www-site.www_bucket_name
 }

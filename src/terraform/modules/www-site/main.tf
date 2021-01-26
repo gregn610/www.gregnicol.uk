@@ -4,4 +4,5 @@ locals {
 
   ssm_parameter_root        = "${local.resource_prefix}-www"
   subdomain                 = var.env_name == "prod" ? "www" : "www-${var.env_name}"
+  auth_domain               = var.env_name == "prod" ? "auth.${var.domain_name}" : "auth-${var.env_name}.${var.domain_name}"
 }

@@ -1,3 +1,3 @@
 # www-cicd
-Terrafrom module to put a CI/CD process on top of an S3+Cloudfront website
+Terraform module to put a CI/CD publishing process on top of an S3+Cloudfront website
 

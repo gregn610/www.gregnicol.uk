@@ -45,7 +45,7 @@ resource "aws_iam_role_policy" "codebuild_policy" {
 }
 
 module "codebuild" {
-  source                 = "git::https://github.com/gregn610/terraform-aws-codebuild?ref=v0.2.110"  # forked ( unchanged) from "jameswoolfenden/codebuild/aws"
+  source                 = "../../modules//mod-codebuild"
   depends_on = [
     aws_iam_role.codebuild
   ]
@@ -60,12 +60,15 @@ module "codebuild" {
   role                   = aws_iam_role.codebuild.name
   projectroot            = local.resource_prefix  # used in the SSM parameters path
   sourcecode             = local.build_sourcecode
+  git_submodules_config  = {
+    fetch_submodules = true
+  }
   versioning             = true  # artifact bucket versioning
 }
 
 
 module "codepipeline" {
-  source                 = "../../modules//mod-codepipeline" # forked for stage.action.namespaces
+  source                 = "../../modules//mod-codepipeline" # Forked for stages.action.namespaces
   artifact_store = {
     location = module.codebuild.artifact_bucket
     type = "S3"

@@ -1,33 +1,18 @@
 version: 0.2
-# Calls `pelican build`, and syncs the artifacts to S3.
-# Post-build updates the build number in SSM and updates cloudfront to use a new originPath, to give blue/green deploys.
-env:
-  parameter-store: {
-    # This list of required vars comes from src/aws-sam/cloud-auth/build/build.js
-    CLOUD_AUTH_DISTRIBUTION = "${TPL_SSM_PATH}/CLOUDFRONT_DISTRIBUTION"
-    CLOUD_AUTH_BASE_URL = "${TPL_SSM_PATH}/BASE_URL"
-    CLOUD_AUTH_CLIENT_ID = "${TPL_SSM_PATH}/CLIENT_ID"
-    CLOUD_AUTH_CLIENT_SECRET = "${TPL_SSM_PATH}/CLIENT_SECRET"
-    CLOUD_AUTH_REDIRECT_URI = "${TPL_SSM_PATH}/REDIRECT_URI"
-    CLOUD_AUTH_SESSION_DURATION = "${TPL_SSM_PATH}/SESSION_DURATION"
-  }
+# The cloud-auth lambda build needs env vars to generate a bundled config file
 phases:
   install:
     runtime-versions:
-      python: 3.8
-    commands: # NB this is a template so bash vars to use dollar-without-curly-braces style variables
-      - yum install -y jq
+      nodejs: 14
   build:
-    commands:
+    commands: # NB this is a template so bash vars to use dollar-without-curly-braces style variables
       - cd "$CODEBUILD_SRC_DIR/src/aws-sam/cloud-auth"
-      - sam --version
-      - |
-        cat >> EOF > config.json
+      - ./build.sh
   post_build:
-    commands:  # NB this is a template so bash vars to use dollar-without-curly-braces style variables
+    commands:
 
 artifacts:
-  base-directory: output
-  discard-paths: no
+  base-directory: src/aws-sam/cloud-auth
+  discard-paths: yes
   files:
-    - '**/*'
+    - 'package.zip'

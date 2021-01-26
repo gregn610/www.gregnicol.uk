@@ -41,7 +41,7 @@ variable "build_timeout" {
 
 variable "build_environment" {
   description = "A map to describe the build environment and populate the environment block"
-  type        = map
+  type        = any  # was map of strings but couldn't pass build  .environment_variables
 }
 
 variable "artifact_type" {

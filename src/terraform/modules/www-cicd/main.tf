@@ -25,3 +25,5 @@ locals {
     buildspec = var.build_buildspec
   }
 }
+
+# ToDo: Rename module as it's not just "www" anymore, there is "infra" too. Need to move state too

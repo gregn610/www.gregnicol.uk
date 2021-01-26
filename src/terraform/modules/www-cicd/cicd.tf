@@ -1,5 +1,5 @@
 resource "aws_iam_group" "builders" {
-  name = "editors"
+  name = "${local.resource_prefix}-builders"
   path = "/${local.resource_prefix}/builders/"
 }
 
@@ -46,6 +46,9 @@ resource "aws_iam_role_policy" "codebuild_policy" {
 
 module "codebuild" {
   source                 = "git::https://github.com/gregn610/terraform-aws-codebuild?ref=v0.2.110"  # forked ( unchanged) from "jameswoolfenden/codebuild/aws"
+  depends_on = [
+    aws_iam_role.codebuild
+  ]
 
   artifact_type          = var.artifact_type
   build_timeout          = var.build_timeout

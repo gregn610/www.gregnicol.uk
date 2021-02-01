@@ -5,7 +5,7 @@ phases:
     runtime-versions:
       nodejs: 12
     commands: # NB this is a template so bash vars to use dollar-without-curly-braces style variables
-      - echo "foobar"
+      - echo yum install -y jq
   build:
     commands: # NB this is a template so bash vars to use dollar-without-curly-braces style variables
       - cd "$CODEBUILD_SRC_DIR/src/aws-sam/cloudfront-auth"
@@ -14,7 +14,7 @@ phases:
     commands:
 
 artifacts:
-  base-directory: src/aws-sam/cloudfront-auth
+  base-directory: src/aws-sam/cloudfront-auth/distributions
   discard-paths: yes
   files:
     - 'package.zip'

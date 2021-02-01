@@ -19,24 +19,9 @@ locals {
     type            = "LINUX_CONTAINER"
     image           = "aws/codebuild/amazonlinux2-x86_64-standard:3.0-20.09.14"
     compute_type    = "BUILD_GENERAL1_SMALL"
-    environment_variable = {
-      "CLOUDAUTH_BASE_URL" = "foobar"
-      "CLOUDAUTH_CLIENT_ID" = "foobar"
-      "CLOUDAUTH_CLIENT_SECRET" = "foobar"
-      "CLOUDAUTH_REDIRECT_URI" = "foobar"
-      "CLOUDAUTH_SESSION_DURATION" = "foobar"
-    }
   }
 }
 
-
-module "www-site" {
-  source = "../../modules//www-site"
-
-  domain_name   = var.domain_name
-  env_name      = var.env_name
-  resource_name = var.resource_name
-}
 locals {
   buildspec_www_site = templatefile("${path.module}/templates/www-cicd-buildspec.yml", {
       TPL_SSM_PATH_CODEBUILD_LATEST = "/${var.env_name}-${local.resource_name_www}/codebuild/${var.env_name}-${local.resource_name_www}/latest"  # format defined in codebuild module
@@ -47,6 +32,14 @@ locals {
   buildspec_infra = templatefile("${path.module}/templates/infra-cicd-buildspec.yml", {
     TPL_SSM_PATH = "/${var.env_name}-${local.resource_name_infra}/codebuild"
   })
+}
+
+module "www-site" {
+  source = "../../modules//www-site"
+
+  domain_name   = var.domain_name
+  env_name      = var.env_name
+  resource_name = var.resource_name
 }
 
 # ToDo: hardcoded buckets in codebuild iam policy
@@ -64,7 +57,6 @@ module "www-cicd" {
   deploy_bucket     = module.www-site.www_bucket_name
 }
 
-
 # Based on https://github.com/JamesWoolfenden/terraform-aws-codebuild but forked for environment_variables etc.
 # ToDo: hardcoded buckets in codebuild iam policy
 module "infra-cicd" {
@@ -77,4 +69,9 @@ module "infra-cicd" {
   })
   build_environment = local.build_environment_infra
   build_buildspec   = local.buildspec_infra
+  cloudauth_base_url = "https://auth.${var.domain_name}"  # ToDo: prod / auth-dev logic
+  cloudauth_client_id = module.www-site.cognito_user_pool_client_id
+  cloudauth_client_secret = ""
+  cloudauth_redirect_uri = "https://www.${var.domain_name}/secure/_callback"  # ToDo: prod / www-dev logic
+  cloudauth_session_duration = 12
 }

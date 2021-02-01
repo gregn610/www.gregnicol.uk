@@ -76,6 +76,12 @@ variable "environment" {
   }
 }
 
+variable "environment_variables" {
+  description = "Map of key value pairs to set in the build environment"
+  type        = map
+  default     = {}
+}
+
 
 variable "sourcecode" {
   description = "A map to describe where your sourcecode comes from, to fill the sourcecode block in a Codebuild project "
@@ -85,6 +91,12 @@ variable "sourcecode" {
     location  = ""
     buildspec = ""
   }
+}
+
+variable "source_version" {
+  description = "Branch or ref"
+  type        = string
+  default     = "refs/heads/main"
 }
 
 variable "git_submodules_config" {

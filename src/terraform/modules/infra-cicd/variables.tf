@@ -41,7 +41,7 @@ variable "build_timeout" {
 
 variable "build_environment" {
   description = "A map to describe the build environment and populate the environment block"
-  type        = any  # was map of strings but couldn't pass build  .environment_variables
+  type        = map
 }
 
 variable "artifact_type" {
@@ -51,7 +51,30 @@ variable "artifact_type" {
 }
 
 variable "versioning" {
-  type        = bool
   description = "Set bucket to version"
+  type        = bool
   default     = true
+}
+# CodeBuild lambda params
+
+variable "cloudauth_base_url" {
+  description = "For cognito: https://cognito-idp.{REGION}.amazonaws.com/{USER-POOL-ID}"
+  type = string
+}
+variable "cloudauth_client_id" {
+  description = "Cognito App Client ID"
+  type = string
+}
+variable "cloudauth_client_secret" {
+  description = ""
+  type = string
+}
+variable "cloudauth_redirect_uri" {
+  description = ""
+  type = string
+}
+variable "cloudauth_session_duration" {
+  description = "Session Duration (hours)"
+  type = number
+  default = 12
 }

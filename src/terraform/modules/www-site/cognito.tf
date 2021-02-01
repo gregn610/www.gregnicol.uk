@@ -6,8 +6,22 @@ locals{
 
 resource "aws_cognito_user_pool" "user_pool" {
   name                     = local.resource_name
-  alias_attributes         = ["email"]
+
+  alias_attributes         = ["phone_number", "email", "preferred_username"]
   auto_verified_attributes = ["email"]
+  mfa_configuration        = "OFF"
+
+  account_recovery_setting {
+    recovery_mechanism {
+      name     = "verified_email"
+      priority = 1
+    }
+
+//    recovery_mechanism {
+//      name     = "verified_phone_number"
+//      priority = 2
+//    }
+  }
 
   admin_create_user_config {
     allow_admin_create_user_only = false
@@ -50,12 +64,11 @@ resource "aws_cognito_user_pool_client" "site_client" {
   user_pool_id    = aws_cognito_user_pool.user_pool.id
   generate_secret = false
   callback_urls = [
-    "https://${local.subdomain}.${var.domain_name}/secure/",
-#    "http://${local.dev_server}/parseauth"
+    "https://${local.subdomain}.${var.domain_name}/secure/_callback",
   ]
+  # If / when there's a secure app, provide a better logout
   logout_urls = [
     "https://${local.subdomain}.${var.domain_name}/",
-#    "http://${local.dev_server}/"
   ]
   allowed_oauth_flows = ["code"]
   allowed_oauth_flows_user_pool_client = true
@@ -66,10 +79,12 @@ resource "aws_cognito_user_pool_client" "site_client" {
     "aws.cognito.signin.user.admin",
     "profile",
   ]
+  # issue: https://github.com/terraform-providers/terraform-provider-aws/issues/4476
+  read_attributes  = ["email", "preferred_username", "profile"]
+  write_attributes = ["email", "preferred_username", "profile"]
 
   explicit_auth_flows = [
     "ALLOW_CUSTOM_AUTH", "ALLOW_USER_SRP_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"  # copied from CFN example deployment
-#    "ADMIN_NO_SRP_AUTH", "USER_PASSWORD_AUTH", # dunno where these came from ???
   ]
   prevent_user_existence_errors = "ENABLED"
 }

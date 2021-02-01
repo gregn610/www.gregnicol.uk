@@ -20,6 +20,15 @@ resource "aws_codebuild_project" "project" {
     image           = var.environment["image"]
     type            = var.environment["type"]
     privileged_mode = var.environment["privileged_mode"]
+
+    dynamic "environment_variable" {
+      for_each = var.environment_variables
+      content {
+        name  = environment_variable.key
+        value = environment_variable.value
+
+      }
+    }
   }
 
   source {
@@ -31,6 +40,7 @@ resource "aws_codebuild_project" "project" {
       fetch_submodules = var.git_submodules_config["fetch_submodules"]
     }
   }
+  source_version    = var.source_version
 
   tags = var.common_tags
 }

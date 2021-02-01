@@ -1,21 +1,7 @@
 locals {
-  www_bucket_name     = "www.gregnicol.uk"
-  logging_bucket_name = format("%s-logging-%s", local.resource_prefix, data.aws_caller_identity.current.account_id)
-}
-
-data "aws_iam_policy_document" "s3_secured_oai_policy" {
-  statement {
-    actions   = ["s3:GetObject", "s3:ListBucket"]
-    resources = [
-       module.www_bucket.this_s3_bucket_arn,
-      "${module.www_bucket.this_s3_bucket_arn}/*"
-    ]
-
-    principals {
-      type        = "AWS"
-      identifiers = [aws_cloudfront_origin_access_identity.www_s3.iam_arn]
-    }
-  }
+  www_bucket_name             = "www.gregnicol.uk"
+  logging_bucket_name         = format("%s-logging-%s", local.resource_prefix, data.aws_caller_identity.current.account_id)
+  use1_deployment_bucket_name = format("%s-use1-deploy-%s", local.resource_prefix, data.aws_caller_identity.current.account_id)
 }
 
 # www bucket
@@ -58,6 +44,31 @@ module "logging_bucket" {
 
 resource "aws_s3_bucket_ownership_controls" "cloudfront_logging_bucket" {
   bucket = local.logging_bucket_name
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+
+# US East 1 lambda@edge deployment bucket
+module "use1_deployment_bucket" {
+  source = "terraform-aws-modules/s3-bucket/aws"
+  providers = {
+    aws = aws.use1
+  }
+
+  bucket                  = local.use1_deployment_bucket_name
+  acl                     = "private"
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_ownership_controls" "use1_deployment_bucket" {
+  provider = aws.use1
+
+  bucket = local.use1_deployment_bucket_name
   rule {
     object_ownership = "BucketOwnerPreferred"
   }

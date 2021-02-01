@@ -56,6 +56,7 @@ module "codebuild" {
   defaultbranch          = var.default_branch
   description            = "${local.resource_prefix} build"
   environment            = var.build_environment
+  environment_variables  = local.environment_variables
   name                   = local.build_name
   role                   = aws_iam_role.codebuild.name
   projectroot            = local.resource_prefix  # used in the SSM parameters path

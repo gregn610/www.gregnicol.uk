@@ -80,7 +80,7 @@ resource "aws_cognito_user_pool_client" "site_client" {
 #    "profile",
   ]
   # issue: https://github.com/terraform-providers/terraform-provider-aws/issues/4476
-  read_attributes  = ["email", "preferred_username", "profile"]
+  read_attributes  = ["email", "email_verified", "preferred_username", "profile"]
   write_attributes = ["email", "preferred_username", "profile"]
 
   explicit_auth_flows = [

@@ -50,7 +50,7 @@ Use Cognito, Lambda@Edge & Cloudfront to provide serverless authentication & aut
  - [x] Fork https://github.com/Widen/cloudfront-auth and apply [Cognito PR](https://github.com/Widen/cloudfront-auth/compare/master...gregn610:gn1-cognito).
  - [ ] Terraform + AWS SAM packaging.
  - [ ] TF Templates vs Lambda layers for config.
- - [ ] Terraform deployed.
+ - [x] Terraform deployed.
 
  
 .

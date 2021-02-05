@@ -14,10 +14,10 @@
             "Resource": [
                 "arn:aws:s3:::www.gregnicol.uk/*",
                 "arn:aws:s3:::www.gregnicol.uk",
-                "arn:aws:s3:::codepipeline-eu-west-2-163714928765/*",
-                "arn:aws:s3:::codepipeline-eu-west-2-163714928765",
-                "arn:aws:s3:::prod-gregnicoluk-infra-074234086608-artifacts/*",
-                "arn:aws:s3:::prod-gregnicoluk-infra-074234086608-artifacts"
+                "arn:aws:s3:::codepipeline-us-east-1-163714928765/*",
+                "arn:aws:s3:::codepipeline-us-east-1-163714928765",
+                "arn:aws:s3:::${USE1_DEPLOYMENT_BUCKET}/*",
+                "arn:aws:s3:::${USE1_DEPLOYMENT_BUCKET}"
             ]
         },
         {

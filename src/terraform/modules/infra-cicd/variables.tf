@@ -50,6 +50,12 @@ variable "artifact_type" {
   default     = "S3"
 }
 
+variable "artifact_bucket_name" {
+  description = "Bucket for the cloudfront-auth lambda build artifacts"
+  type        = string
+  default     = ""
+}
+
 variable "versioning" {
   description = "Set bucket to version"
   type        = bool
@@ -65,10 +71,19 @@ variable "cloudauth_client_id" {
   description = "Cognito App Client ID"
   type = string
 }
-variable "cloudauth_client_secret" {
+variable "cloudauth_response_type" {
   description = ""
   type = string
 }
+variable "cloudauth_scope" {
+  description = "Space separated list"
+  type = string
+}
+variable "cloudauth_grant_type" {
+  description = ""
+  type = string
+}
+
 variable "cloudauth_redirect_uri" {
   description = ""
   type = string

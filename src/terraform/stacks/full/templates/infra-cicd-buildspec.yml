@@ -5,7 +5,8 @@ phases:
     runtime-versions:
       nodejs: 12
     commands: # NB this is a template so bash vars to use dollar-without-curly-braces style variables
-      - echo yum install -y jq
+      - yum install -y tree # sleep 21 # otherwise git submodules aren't there ???
+      - tree                #  debugging
   build:
     commands: # NB this is a template so bash vars to use dollar-without-curly-braces style variables
       - cd "$CODEBUILD_SRC_DIR/src/aws-sam/cloudfront-auth"

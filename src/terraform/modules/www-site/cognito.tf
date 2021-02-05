@@ -73,11 +73,11 @@ resource "aws_cognito_user_pool_client" "site_client" {
   allowed_oauth_flows = ["code"]
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_scopes = [
-    "phone",
+#    "phone",
     "email",
     "openid",
-    "aws.cognito.signin.user.admin",
-    "profile",
+#    "aws.cognito.signin.user.admin",
+#    "profile",
   ]
   # issue: https://github.com/terraform-providers/terraform-provider-aws/issues/4476
   read_attributes  = ["email", "preferred_username", "profile"]

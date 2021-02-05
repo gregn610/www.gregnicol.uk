@@ -15,12 +15,12 @@ resource "aws_cloudfront_origin_access_identity" "www_s3" {
 
 resource "aws_cloudfront_distribution" "www" {
   # Not using aws-terraform-module because blue/green needs a lifecycle ignore on origin_path
-//  lifecycle {
-//    ignore_changes = [
-//      origin  # Gah!, can't narrow this down to ["public_bucket"]["origin_path"]
-//                               # https://github.com/hashicorp/terraform/issues/22504
-//    ]
-//  }
+  lifecycle {
+    ignore_changes = [
+      origin  # Gah!, can't narrow this down to ["public_bucket"]["origin_path"]
+                               # https://github.com/hashicorp/terraform/issues/22504
+    ]
+  }
 
   aliases             = ["${local.subdomain}.${var.domain_name}"]
   comment             = "CloudFront for ${var.resource_name}"
@@ -56,6 +56,11 @@ resource "aws_cloudfront_distribution" "www" {
     compress = true
     forwarded_values {
       query_string = false
+      headers = []
+//        "Access-Control-Request-Headers",
+//        "Access-Control-Request-Method",
+//        "Origin"
+//      ]
       cookies {
         forward = "none"
       }
@@ -63,8 +68,7 @@ resource "aws_cloudfront_distribution" "www" {
     lambda_function_association {
       event_type = "viewer-request"
       include_body = false
-      # ToDo: sort out H/C version/alias
-      lambda_arn   = "${module.lambda_cloudfront_auth.this_lambda_function_arn}:11"
+      lambda_arn   = module.lambda_cloudfront_auth.this_lambda_function_qualified_arn
     }
   }
 

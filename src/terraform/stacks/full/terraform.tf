@@ -58,20 +58,23 @@ module "www-cicd" {
 }
 
 # Based on https://github.com/JamesWoolfenden/terraform-aws-codebuild but forked for environment_variables etc.
-# ToDo: hardcoded buckets in codebuild iam policy
 module "infra-cicd" {
   source = "../../modules//infra-cicd"
 
   env_name      = var.env_name
   resource_name = local.resource_name_infra
 
+  artifact_bucket_name = module.www-site.use1_deployment_bucket
   build_codebuild_policy = templatefile("${path.module}/templates/infra-cicd-codebuild-policy.json", {
+    USE1_DEPLOYMENT_BUCKET = module.www-site.use1_deployment_bucket
   })
-  build_environment = local.build_environment_infra
-  build_buildspec   = local.buildspec_infra
-  cloudauth_base_url = "https://auth.${var.domain_name}"  # ToDo: prod / auth-dev logic
-  cloudauth_client_id = module.www-site.cognito_user_pool_client_id
-  cloudauth_client_secret = ""
-  cloudauth_redirect_uri = "https://www.${var.domain_name}/secure/_callback"  # ToDo: prod / www-dev logic
-  cloudauth_session_duration = 12
+  build_environment          = local.build_environment_infra
+  build_buildspec            = local.buildspec_infra
+  cloudauth_base_url         = "https://cognito-idp.${data.aws_region.current.id}.amazonaws.com/${module.www-site.cognito_user_pool_id}"
+  cloudauth_client_id        = module.www-site.cognito_user_pool_client_id
+  cloudauth_response_type    = "code"
+  cloudauth_scope            = "openid email"
+  cloudauth_grant_type       = "authorization_code"
+  cloudauth_redirect_uri     = "https://www.${var.domain_name}/secure/_callback"
+  cloudauth_session_duration = 12 # Hours
 }

@@ -51,6 +51,7 @@ module "codebuild" {
   ]
 
   artifact_type          = var.artifact_type
+  bucketname             = var.artifact_bucket_name
   build_timeout          = var.build_timeout
   common_tags            = var.common_tags
   defaultbranch          = var.default_branch
@@ -67,9 +68,9 @@ module "codebuild" {
   versioning             = true  # artifact bucket versioning
 }
 
-
 module "codepipeline" {
   source                 = "../../modules//mod-codepipeline" # Forked for stages.action.namespaces
+
   artifact_store = {
     location = module.codebuild.artifact_bucket
     type = "S3"

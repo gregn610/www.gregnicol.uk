@@ -3,7 +3,6 @@ locals {
   resource_prefix = format("%s-%s", var.env_name, var.resource_name)
 }
 locals {
-  artifact_bucket_name = format("%s-www-artifacts-%s", local.resource_prefix, data.aws_caller_identity.current.account_id)
   build_name           = local.resource_prefix
   build_namespace      =  "CICD_BUILD"
   deploy_namespace     = "CICD_DEPLOY"
@@ -22,7 +21,9 @@ locals {
   environment_variables = {
     CLOUDAUTH_BASE_URL         = var.cloudauth_base_url
     CLOUDAUTH_CLIENT_ID        = var.cloudauth_client_id
-    CLOUDAUTH_CLIENT_SECRET    = var.cloudauth_client_secret
+    CLOUDAUTH_RESPONSE_TYPE    = var.cloudauth_response_type
+    CLOUDAUTH_SCOPE            = var.cloudauth_scope
+    CLOUDAUTH_GRANT_TYPE       = var.cloudauth_grant_type
     CLOUDAUTH_REDIRECT_URI     = var.cloudauth_redirect_uri
     CLOUDAUTH_SESSION_DURATION = var.cloudauth_session_duration
   }

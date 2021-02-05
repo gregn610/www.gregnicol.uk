@@ -7,6 +7,9 @@ output "www_bucket_name" {
 output "logging_bucket_name" {
   value = module.logging_bucket.this_s3_bucket_id
 }
+output "use1_deployment_bucket" {
+  value = module.use1_deployment_bucket.this_s3_bucket_id
+}
 
 # Cloudfront
 output "cloudfront_distribution_id" {

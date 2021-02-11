@@ -28,7 +28,7 @@ variable "role" {
 }
 
 variable "common_tags" {
-  type        = map
+  type        = map(string)
   description = "An AWS tagging scheme"
 }
 
@@ -78,14 +78,14 @@ variable "environment" {
 
 variable "environment_variables" {
   description = "Map of key value pairs to set in the build environment"
-  type        = map
+  type        = map(string)
   default     = {}
 }
 
 
 variable "sourcecode" {
   description = "A map to describe where your sourcecode comes from, to fill the sourcecode block in a Codebuild project "
-  type        = map
+  type        = map(string)
   default = {
     type      = "CODECOMMIT"
     location  = ""
@@ -101,7 +101,7 @@ variable "source_version" {
 
 variable "git_submodules_config" {
   description = "Fetch Git submodules for the AWS CodeBuild build project"
-  type = map
+  type = map(bool)
   default = {
     fetch_submodules = false
   }

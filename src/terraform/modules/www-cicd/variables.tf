@@ -10,7 +10,7 @@ variable "resource_name" {
 }
 
 variable "common_tags" {
-  type        = map
+  type        = map(string)
   description = "Common AWS resource tags"
   default     = {}
 }

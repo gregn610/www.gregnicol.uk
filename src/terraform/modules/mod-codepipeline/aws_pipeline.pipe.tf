@@ -34,5 +34,5 @@ resource "aws_codepipeline" "pipe" {
 }
 
 locals {
-  role_arn = "${var.role_arn == "" ? aws_iam_role.pipeline.0.arn : var.role_arn}"
+  role_arn = var.role_arn == "" ? aws_iam_role.pipeline.0.arn : var.role_arn
 }

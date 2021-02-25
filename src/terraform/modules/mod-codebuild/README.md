@@ -1,22 +1,12 @@
 # terraform-aws-codebuild
 
-[![Build Status](https://github.com/JamesWoolfenden/terraform-aws-codebuild/workflows/Verify%20and%20Bump/badge.svg?branch=master)](https://github.com/JamesWoolfenden/terraform-aws-codebuild)
-[![Latest Release](https://img.shields.io/github/release/JamesWoolfenden/terraform-aws-codebuild.svg)](https://github.com/JamesWoolfenden/terraform-aws-codebuild/releases/latest)
-[![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/JamesWoolfenden/terraform-aws-codebuild.svg?label=latest)](https://github.com/JamesWoolfenden/terraform-aws-codebuild/releases/latest)
-![Terraform Version](https://img.shields.io/badge/tf-%3E%3D0.14.0-blue.svg)
-[![Infrastructure Tests](https://www.bridgecrew.cloud/badges/github/JamesWoolfenden/terraform-aws-codebuild/cis_aws)](https://www.bridgecrew.cloud/link/badge?vcs=github&fullRepo=JamesWoolfenden%2Fterraform-aws-codebuild&benchmark=CIS+AWS+V1.2)
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
-[![checkov](https://img.shields.io/badge/checkov-verified-brightgreen)](https://www.checkov.io/)
-[![Infrastructure Tests](https://www.bridgecrew.cloud/badges/github/jameswoolfenden/terraform-aws-codebuild/general)](https://www.bridgecrew.cloud/link/badge?vcs=github&fullRepo=JamesWoolfenden%2Fterraform-aws-codebuild&benchmark=INFRASTRUCTURE+SECURITY)
-
 Terraform module to provision an AWS [`codebuild`](https://aws.amazon.com/codebuild/) CI/CD system.
 
-When to use Codebuild:
-If you want to stay with AWS, or when you are using ECR, Codepipeline or CodeCommit.
+Forked from https://github.com/JamesWoolfenden/terraform-aws-codebuild
 
 ---
 
-![alt text](./diagram/codebuild.png)
+![aws resources diagram](./diagram/codebuild.png)
 
 It's 100% Open Source and licensed under the [APACHE2](LICENSE).
 
@@ -36,8 +26,6 @@ module "codebuild" {
   sourcecode             = var.sourcecode
 }
 ```
-
-As always a full example is included for reference.
 
 ## Testing
 
